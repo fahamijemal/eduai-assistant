@@ -11,8 +11,11 @@ import {
   GraduationCap,
   Menu,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useState } from 'react';
 
 const navItems = [
@@ -26,6 +29,7 @@ const navItems = [
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const sidebarContent = (
@@ -47,7 +51,7 @@ export default function Sidebar() {
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
               cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px]',
                 isActive
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
@@ -70,6 +74,13 @@ export default function Sidebar() {
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer mb-1"
+        >
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+        </button>
         <button
           onClick={logout}
           className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"

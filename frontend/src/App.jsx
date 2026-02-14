@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './components/ui/toast';
 import MainLayout from './components/layout/MainLayout';
 import LoginPage from './pages/LoginPage';
@@ -14,23 +15,25 @@ import RevisionPlanPage from './pages/RevisionPlanPage';
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/documents" element={<DocumentsPage />} />
-              <Route path="/assistant" element={<AIAssistantPage />} />
-              <Route path="/quizzes" element={<QuizzesPage />} />
-              <Route path="/analytics" element={<AnalyticsPage />} />
-              <Route path="/revision" element={<RevisionPlanPage />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </ToastProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/documents" element={<DocumentsPage />} />
+                <Route path="/assistant" element={<AIAssistantPage />} />
+                <Route path="/quizzes" element={<QuizzesPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/revision" element={<RevisionPlanPage />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </ToastProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
