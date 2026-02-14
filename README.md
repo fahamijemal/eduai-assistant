@@ -197,7 +197,7 @@ cursorcoffe/
 
 ## Built At
 
-**Cafe Cursor Adama** -- February 14, 2026
+**Cafe Cursor Adama** -- February 14, 2026, 1:37 PM GMT+3
 
 This project was built at Cafe Cursor, a community meetup for builders, creators, and tech enthusiasts hosted by the [Cursor Community](https://cursor.com/community) in Adama, Ethiopia.
 
