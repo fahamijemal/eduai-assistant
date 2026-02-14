@@ -14,6 +14,9 @@ EduAI goes beyond simple document Q&A. It acts as an AI Learning Coach that unde
 - **Smart Revision Scheduler** -- Spaced repetition logic that generates daily micro-study plans
 - **Adaptive Quiz Engine** -- Dynamically generated quizzes targeting weak areas with adjustable difficulty
 - **Learning Analytics Dashboard** -- Study time graphs, mastery radar charts, performance trends
+- **Study Session Tracking** -- Auto-tracks study time with heartbeat, streak tracking
+- **Dark Mode** -- Full dark/light theme toggle with system preference detection
+- **Markdown AI Responses** -- Rich markdown rendering for AI chat, summaries, and comparisons
 
 ## Tech Stack
 
@@ -66,17 +69,55 @@ npm run dev
 
 This starts both backend (port 5000) and frontend (port 5173) concurrently.
 
-### Docker Deployment
+### 4. Run tests
+
+```bash
+npm test --workspace=backend
+```
+
+## Deployment
+
+### Option A: Docker (recommended)
 
 ```bash
 # Set your Gemini API key
 export GEMINI_API_KEY=your-key
+export JWT_SECRET=your-secure-secret
 
 # Build and run
 docker-compose up --build
 ```
 
 The app will be available at `http://localhost:5000`.
+
+### Option B: Vercel (frontend) + Railway/Render (backend)
+
+**Frontend on Vercel:**
+
+1. Connect your GitHub repo to Vercel
+2. Set the root directory to `frontend`
+3. Set build command: `npm run build`
+4. Set output directory: `dist`
+5. Add environment variable: `VITE_API_URL=https://your-backend-url.railway.app/api`
+
+**Backend on Railway/Render:**
+
+1. Connect your GitHub repo
+2. Set the root directory to `backend`
+3. The `Procfile` is already configured: `web: node src/server.js`
+4. Add environment variables:
+   - `NODE_ENV=production`
+   - `MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/eduai`
+   - `JWT_SECRET=your-secure-secret`
+   - `GEMINI_API_KEY=your-gemini-api-key`
+   - `CORS_ORIGIN=https://your-frontend.vercel.app`
+
+### Option C: MongoDB Atlas (database)
+
+1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a database user and whitelist your IP (or use `0.0.0.0/0` for cloud deploys)
+3. Copy the connection string: `mongodb+srv://<user>:<pass>@cluster.mongodb.net/eduai`
+4. Set it as `MONGO_URI` in your backend environment
 
 ## API Endpoints
 
@@ -115,6 +156,8 @@ The app will be available at `http://localhost:5000`.
 | GET | `/api/analytics/study-time` | Study time analytics |
 | GET | `/api/analytics/performance-trend` | Performance over time |
 | GET | `/api/analytics/revision-plan` | Smart daily revision plan |
+| POST | `/api/analytics/study-session/start` | Start a study session |
+| POST | `/api/analytics/study-session/end` | End a study session |
 
 ## Project Structure
 
@@ -142,9 +185,11 @@ cursorcoffe/
 ├── frontend/
 │   └── src/
 │       ├── components/            # UI components (shadcn-style)
-│       ├── context/               # Auth context
+│       ├── context/               # Auth + Theme contexts
+│       ├── hooks/                 # useStudyTimer
 │       ├── lib/                   # API client, utilities
 │       └── pages/                 # Application pages
+│   └── vercel.json               # Vercel SPA rewrite rules
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
