@@ -162,7 +162,7 @@ export default function DocumentsPage() {
             <Card key={doc._id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-red-50">
+                  <div className="p-2 rounded-lg bg-destructive/10">
                     <FileText className="h-6 w-6 text-red-500" />
                   </div>
                   <div className="flex-1 min-w-0">

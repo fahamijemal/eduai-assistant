@@ -234,7 +234,7 @@ export default function AnalyticsPage() {
                 ) : weakTopics?.weakTopics?.length > 0 ? (
                   <div className="space-y-3">
                     {weakTopics.weakTopics.map((t) => (
-                      <div key={t.topicName} className="p-3 rounded-lg bg-red-50 border border-red-100">
+                      <div key={t.topicName} className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm font-medium">{t.topicName}</span>
                           <span className="text-sm font-bold text-destructive">{t.accuracy}%</span>

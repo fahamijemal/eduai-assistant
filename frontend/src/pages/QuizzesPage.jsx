@@ -164,7 +164,7 @@ export default function QuizzesPage() {
                 {documents.map((doc) => (
                   <label
                     key={doc._id}
-                    className="flex items-center gap-2 p-3 rounded-lg border hover:bg-secondary cursor-pointer text-sm"
+                    className="flex items-center gap-2 p-3 rounded-lg border hover:bg-secondary cursor-pointer text-sm min-h-[44px]"
                   >
                     <input
                       type="checkbox"
@@ -253,7 +253,7 @@ export default function QuizzesPage() {
                   key={i}
                   onClick={() => handleAnswer(option)}
                   disabled={submitting}
-                  className="w-full text-left p-4 rounded-lg border hover:bg-primary/5 hover:border-primary transition-colors cursor-pointer"
+                  className="w-full text-left p-4 rounded-lg border hover:bg-primary/5 hover:border-primary transition-colors cursor-pointer min-h-[44px]"
                 >
                   <span className="text-sm">{option}</span>
                 </button>
