@@ -1,7 +1,21 @@
 import { Outlet, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useAuth } from '@/context/AuthContext';
+import { useStudyTimer } from '@/hooks/useStudyTimer';
 import { Skeleton } from '@/components/ui/skeleton';
+
+function AuthenticatedLayout() {
+  useStudyTimer();
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto p-4 pt-16 lg:pt-8 lg:p-8">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
 
 export default function MainLayout() {
   const { user, loading } = useAuth();
@@ -22,12 +36,5 @@ export default function MainLayout() {
     return <Navigate to="/login" replace />;
   }
 
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-        <Outlet />
-      </main>
-    </div>
-  );
+  return <AuthenticatedLayout />;
 }

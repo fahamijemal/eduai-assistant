@@ -7,6 +7,8 @@ import {
   getStudyTime,
   getPerformanceTrend,
   getRevisionPlan,
+  startStudySession,
+  endStudySession,
 } from '../controllers/analyticsController.js';
 
 const router = Router();
@@ -20,5 +22,7 @@ router.get('/exam-readiness', getExamReadiness);
 router.get('/study-time', getStudyTime);
 router.get('/performance-trend', getPerformanceTrend);
 router.get('/revision-plan', getRevisionPlan);
+router.post('/study-session/start', startStudySession);
+router.post('/study-session/end', endStudySession);
 
 export default router;

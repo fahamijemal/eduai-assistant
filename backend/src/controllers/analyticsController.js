@@ -146,6 +146,51 @@ export async function getPerformanceTrend(req, res, next) {
   }
 }
 
+export async function startStudySession(req, res, next) {
+  try {
+    const session = await StudySession.create({
+      userId: req.user._id,
+      startTime: new Date(),
+      activities: req.body.activities || [],
+    });
+    res.status(201).json({ session });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function endStudySession(req, res, next) {
+  try {
+    const { sessionId } = req.body;
+    const session = await StudySession.findOne({ _id: sessionId, userId: req.user._id });
+    if (!session) return res.status(404).json({ error: 'Session not found' });
+
+    session.endTime = new Date();
+    session.durationMinutes = Math.round((session.endTime - session.startTime) / 60000);
+    await session.save();
+
+    // Update user study time and streak
+    const user = req.user;
+    user.studyTime = (user.studyTime || 0) + session.durationMinutes;
+
+    const today = new Date().toDateString();
+    const lastStudy = user.lastStudyDate ? new Date(user.lastStudyDate).toDateString() : null;
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+    if (lastStudy === yesterday) {
+      user.streak = (user.streak || 0) + 1;
+    } else if (lastStudy !== today) {
+      user.streak = 1;
+    }
+    user.lastStudyDate = new Date();
+    await user.save();
+
+    res.json({ session, studyTime: user.studyTime, streak: user.streak });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getRevisionPlan(req, res, next) {
   try {
     const plan = await generateDailyPlan(req.user._id);

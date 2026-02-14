@@ -69,6 +69,8 @@ export const analyticsApi = {
   getStudyTime: () => api.get('/analytics/study-time'),
   getPerformanceTrend: () => api.get('/analytics/performance-trend'),
   getRevisionPlan: () => api.get('/analytics/revision-plan'),
+  startStudySession: () => api.post('/analytics/study-session/start'),
+  endStudySession: (sessionId) => api.post('/analytics/study-session/end', { sessionId }),
 };
 
 export default api;
