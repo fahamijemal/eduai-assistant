@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { documentsApi, aiApi } from '@/lib/api';
 import { useToast } from '@/components/ui/toast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import {
   Send,
   Loader2,
@@ -16,17 +17,33 @@ import {
   GitCompare,
   BookOpen,
   MessageSquare,
+  Trash2,
 } from 'lucide-react';
 
 export default function AIAssistantPage() {
   const { addToast } = useToast();
   const [documents, setDocuments] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    try {
+      const stored = sessionStorage.getItem('eduai_chat_messages');
+      return stored ? JSON.parse(stored) : [];
+    } catch { return []; }
+  });
   const [question, setQuestion] = useState('');
   const [selectedDocs, setSelectedDocs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState('chat');
   const messagesEndRef = useRef(null);
+
+  // Persist messages to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('eduai_chat_messages', JSON.stringify(messages));
+  }, [messages]);
+
+  const clearChat = useCallback(() => {
+    setMessages([]);
+    sessionStorage.removeItem('eduai_chat_messages');
+  }, []);
 
   // Compare state
   const [docA, setDocA] = useState('');
@@ -180,7 +197,7 @@ export default function AIAssistantPage() {
 
             {/* Chat Area */}
             <Card className="lg:col-span-3">
-              <CardContent className="p-0 flex flex-col h-[500px]">
+              <CardContent className="p-0 flex flex-col h-[60vh] lg:h-[500px]">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {messages.length === 0 && (
                     <div className="flex flex-col items-center justify-center h-full text-center">
@@ -207,7 +224,11 @@ export default function AIAssistantPage() {
                             : 'bg-secondary'
                         }`}
                       >
-                        <p className="whitespace-pre-wrap">{msg.content}</p>
+                        {msg.role === 'assistant' ? (
+                          <MarkdownRenderer content={msg.content} />
+                        ) : (
+                          <p className="whitespace-pre-wrap">{msg.content}</p>
+                        )}
                         {msg.responseTime && (
                           <p className="text-xs opacity-60 mt-1">
                             {(msg.responseTime / 1000).toFixed(1)}s
@@ -243,6 +264,17 @@ export default function AIAssistantPage() {
                   <Button type="submit" size="icon" disabled={loading}>
                     <Send className="h-4 w-4" />
                   </Button>
+                  {messages.length > 0 && (
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="outline"
+                      onClick={clearChat}
+                      title="Clear chat"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </form>
               </CardContent>
             </Card>
@@ -287,7 +319,7 @@ export default function AIAssistantPage() {
               </Button>
               {compareResult && (
                 <div className="mt-4 p-4 rounded-lg bg-secondary">
-                  <p className="whitespace-pre-wrap text-sm">{compareResult}</p>
+                  <MarkdownRenderer content={compareResult} />
                 </div>
               )}
             </CardContent>
@@ -313,7 +345,7 @@ export default function AIAssistantPage() {
               </Button>
               {summaryResult && (
                 <div className="mt-4 p-4 rounded-lg bg-secondary">
-                  <p className="whitespace-pre-wrap text-sm">{summaryResult}</p>
+                  <MarkdownRenderer content={summaryResult} />
                 </div>
               )}
             </CardContent>
